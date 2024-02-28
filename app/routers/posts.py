@@ -17,7 +17,7 @@ from app.oauth2 import get_current_user
 router = APIRouter(prefix="/posts", tags=["Posts"])
 
 
-@router.get("", status_code=status.HTTP_200_OK, response_model=List[PostCreate])
+@router.get("", status_code=status.HTTP_200_OK, response_model=List[PostOut])
 async def get_posts(
     db: AsyncSession = Depends(get_async_db),
     current_user=Depends(get_current_user),
