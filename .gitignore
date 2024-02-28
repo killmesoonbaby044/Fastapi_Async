@@ -1,0 +1,6 @@
+__pycache__/
+.env
+*.log
+test_main.http
+.DS_Store
+.idea
