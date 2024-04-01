@@ -1,13 +1,10 @@
 from datetime import datetime
 from typing import Optional, Annotated
 
-from fastapi import Depends
-from pydantic import EmailStr, Field, BaseModel, ConfigDict, field_validator
+from pydantic import EmailStr, Field, BaseModel, ConfigDict
 
-from app.database import Session
-from app.exceptions.exception import UserExc
 
-from app.models import User
+# from app.database import Session
 
 
 class UserBase(BaseModel):

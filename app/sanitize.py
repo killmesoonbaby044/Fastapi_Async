@@ -1,8 +1,9 @@
+import functools
 import json
+import typing
+
 import bleach
 from starlette.types import ASGIApp, Scope, Receive, Send
-import functools
-import typing
 
 
 def __sanitize_array(array_values: list[typing.Any]) -> list[typing.Any]:

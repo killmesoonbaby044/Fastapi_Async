@@ -1,15 +1,13 @@
-from typing import List
-
 from fastapi import APIRouter, Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import load_only, defaultload, defer
+from sqlalchemy.orm import load_only, defaultload
 from starlette import status
 
 from app.database import get_async_db
 from app.models import Post, User
 from app.oauth2 import get_current_user
-from app.schemas import PostOut, UserOut
+from app.schemas import PostOut
 
 router = APIRouter(prefix="/custom", tags=["Custom"])
 

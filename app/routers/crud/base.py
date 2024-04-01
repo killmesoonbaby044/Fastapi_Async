@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
 
 from app.models import Post, User, Vote
-from app.schemas import PostBase, UserCreate, VoteBase, PostCreate
+from app.schemas import UserCreate, VoteBase, PostCreate
 
 
 async def get_table(db: AsyncSession, table: Type[Post | User]) -> ScalarResult:

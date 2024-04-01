@@ -5,19 +5,19 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 from starlette.responses import Response
 
-from app.database import get_async_db
 import app.routers.crud.base as base_crud
 import app.routers.crud.posts as post_crud
 from app.Query_Depends import post_query
+from app.database import get_async_db
 from app.exceptions.exception import PostExc
 from app.models import Post, User
-from app.schemas import PostOut, PostBase, PostCreate
 from app.oauth2 import get_current_user
+from app.schemas import PostOut, PostBase, PostCreate
 
 router = APIRouter(prefix="/posts", tags=["Posts"])
 
 
-@router.get("", status_code=status.HTTP_200_OK, response_model=List[PostOut])
+@router.get("", status_code=status.HTTP_200_OK, response_model=List[PostCreate])
 async def get_posts(
     db: AsyncSession = Depends(get_async_db),
     current_user=Depends(get_current_user),
@@ -29,6 +29,14 @@ async def get_posts(
 
 @router.get("/my", response_model=List[PostOut], status_code=status.HTTP_200_OK)
 async def get_my_posts(
+    db: AsyncSession = Depends(get_async_db), current_user=Depends(get_current_user)
+):
+    posts = await post_crud.get_owner_posts(db, current_user)
+    return posts.all()
+
+
+@router.get("/my1", response_model=List[PostOut], status_code=status.HTTP_200_OK)
+async def get_my_posts1(
     db: AsyncSession = Depends(get_async_db), current_user=Depends(get_current_user)
 ):
     posts = await post_crud.get_owner_posts(db, current_user)

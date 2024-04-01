@@ -4,3 +4,4 @@ __pycache__/
 test_main.http
 .DS_Store
 .idea
+*.pub

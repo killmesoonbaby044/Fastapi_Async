@@ -6,10 +6,10 @@ from jose import jwt, JWTError
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
+import app.routers.crud.users as user_crud
 from app import schemas
 from app.config import settings
 from app.database import get_async_db
-from app.models import User
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 SECRET_KEY = settings.secret_key
@@ -47,5 +47,5 @@ async def get_current_user(
         headers={"WWW-Authenticate": "Bearer"},
     )
     token = verify_acc_token(token, credentials_exception)
-    user = await db.get(User, token.id)
+    user = await user_crud.get_user(db, token.id)
     return user

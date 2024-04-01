@@ -2,11 +2,11 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
-from app.exceptions.exception import PostExc, VoteExc
-from app.routers.crud.base import add_row, delete_row, get_filter_row
 from app.database import get_async_db
+from app.exceptions.exception import PostExc, VoteExc
 from app.models import Vote, Post
 from app.oauth2 import get_current_user
+from app.routers.crud.base import add_row, delete_row, get_filter_row
 from app.schemas import VoteIn
 
 router = APIRouter(prefix="/votes", tags=["Votes"])

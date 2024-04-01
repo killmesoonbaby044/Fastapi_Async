@@ -1,13 +1,15 @@
 from typing import List
+
 from fastapi import Depends, APIRouter
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
-from app.exceptions.exception import UserExc
 import app.routers.crud.base as base_crud
-from app.database import get_async_db
-from app.models import User
 import app.routers.crud.users as user_crud
+from app.database import get_async_db
+from app.exceptions.exception import UserExc
+from app.models import User
+from app.oauth2 import get_current_user
 from app.schemas import UserOut, UserCreate
 from app.utils import hashing
 
@@ -15,7 +17,10 @@ router = APIRouter(prefix="/users", tags=["Users"])
 
 
 @router.get("", response_model=List[UserOut], status_code=status.HTTP_200_OK)
-async def get_users(db: AsyncSession = Depends(get_async_db)):
+async def get_users(
+    db: AsyncSession = Depends(get_async_db),
+    current_user: User = Depends(get_current_user),
+):
     users = await base_crud.get_table(db, User)
     return users.all()
 
@@ -35,7 +40,11 @@ async def create_user(user_cred: UserCreate, db: AsyncSession = Depends(get_asyn
 
 
 @router.delete("/{user_id}")
-async def delete_user(user_id: int, db: AsyncSession = Depends(get_async_db)):
+async def delete_user(
+    user_id: int,
+    db: AsyncSession = Depends(get_async_db),
+    current_user: User = Depends(get_current_user),
+):
     user = await user_crud.get_user(db, user_id)
     await base_crud.delete_row(db, user)
 

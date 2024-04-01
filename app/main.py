@@ -1,30 +1,45 @@
-import sys
+import logging.config
 
-from loguru import logger
 from fastapi import FastAPI
-from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import ResponseValidationError
+from loguru import logger
 from starlette import status
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
 from app.database import engine
+from app.logger import LOGGING_CONFIG
 from app.routers import auth, users, posts, custom, votes
-from app.sanitize import SanitizeMiddleware
-
-logger.add("app.log", rotation="10 MB", level="DEBUG", catch=True, enqueue=True, backtrace=True)
-logger.add(sys.stdout, level="DEBUG")
 
 app = FastAPI()
 
-app.add_middleware(SanitizeMiddleware)
+# app.add_middleware(SanitizeMiddleware)
+
+
+# logging.basicConfig(handlers=[InterceptHandler()], level=0, force=True)
+logging.config.dictConfig(LOGGING_CONFIG)
+
+
+logger.add(
+    "response_validation.log",
+    level="INFO",
+    rotation="10 MB",
+    enqueue=True,
+    compression="zip",
+    filter=lambda record: record["extra"]["file"] == "RVE",
+)
+
+
+# sys.stdout = LoguruStream()
 
 
 @app.exception_handler(ResponseValidationError)
 async def validation_exception_handler(request: Request, exc: ResponseValidationError):
-    error = jsonable_encoder({"detail": exc.errors(), "body": exc.body})
-    # logger.error(str(error), exc_info=True, )
-    print(error)
+    error_messages = [
+        f"got: {error['input']} ->> instead: {error['loc'][2]} ->> {error['msg']}"
+        for error in exc.errors()
+    ]
+    logger.bind(file="RVE").error(error_messages)
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={"detail": "RVE ERROR:(((( "}
@@ -56,3 +71,8 @@ app.include_router(votes.router)
 @app.on_event("shutdown")
 async def shutdown():
     await engine.dispose()
+
+
+@app.get("/")
+async def root():
+    print("as")
