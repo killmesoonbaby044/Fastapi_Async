@@ -45,6 +45,17 @@ class Vote(Base):
     )
 
 
+class Test(Base):
+    __tablename__ = "test"
+
+    user_id: Mapped[int] = mapped_column(primary_key=True, nullable=False)
+    email: Mapped[str] = mapped_column()
+    nickname: Mapped[str] = mapped_column()
+    salary: Mapped[float] = mapped_column()
+
+
+
+
 # PostSQL_alias = alias(Post.__table__)
 #
 # class PostSQL(Base):

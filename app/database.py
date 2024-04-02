@@ -41,6 +41,8 @@ async def get_async_db():
             yield session
         except (ConnectionRefusedError, InterfaceError) as e:
             logger.bind(file="sql").error(f"NO CONNECTION TO DB -->> {str(e)}")
+        # except Exception as e:
+        #     logger.bind(file="sql").error(f"NO CONNECTION TO DB -->> {str(e)}")
 
 
 

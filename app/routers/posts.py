@@ -11,16 +11,16 @@ from app.Query_Depends import post_query
 from app.database import get_async_db
 from app.exceptions.exception import PostExc
 from app.models import Post, User
-from app.oauth2 import get_current_user
+from app.oauth2 import get_current_user, get_current_user2
 from app.schemas import PostOut, PostBase, PostCreate
 
 router = APIRouter(prefix="/posts", tags=["Posts"])
 
 
-@router.get("", status_code=status.HTTP_200_OK, response_model=List[PostCreate])
+@router.get("", status_code=status.HTTP_200_OK, response_model=List[PostOut])
 async def get_posts(
     db: AsyncSession = Depends(get_async_db),
-    current_user=Depends(get_current_user),
+    current_user=Depends(get_current_user2),
     query: dict = Depends(post_query),
 ):
     posts = await post_crud.get_post_table_with_vote(db, **query)

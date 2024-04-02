@@ -9,6 +9,7 @@ from starlette.responses import JSONResponse
 
 from app.database import engine
 from app.logger import LOGGING_CONFIG
+from app.models import Base
 from app.routers import auth, users, posts, custom, votes
 
 app = FastAPI()
@@ -16,7 +17,6 @@ app = FastAPI()
 # app.add_middleware(SanitizeMiddleware)
 
 
-# logging.basicConfig(handlers=[InterceptHandler()], level=0, force=True)
 logging.config.dictConfig(LOGGING_CONFIG)
 
 

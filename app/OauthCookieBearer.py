@@ -8,7 +8,7 @@ from starlette.requests import Request
 from starlette.status import HTTP_401_UNAUTHORIZED
 
 
-class OAuth2PasswordBearer(OAuth2):
+class OAuth2PasswordBearerCookie(OAuth2):
     def __init__(
             self,
             tokenUrl: str,
@@ -45,4 +45,7 @@ class OAuth2PasswordBearer(OAuth2):
             else:
                 return None
 
-        return param
+        if param:
+            return param
+        if param_cookie:
+            return param_cookie

@@ -1,3 +1,5 @@
+from http import HTTPStatus
+
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.params import Form
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -23,7 +25,7 @@ templates = Jinja2Templates(directory="app/templates")
 async def api_login(user_cred: LoginUser, db: AsyncSession = Depends(get_async_db)):
     token = await loging(db, user_cred.email, user_cred.password)
 
-    return {"access_token": token, "token_type": "bearer"}
+    return {"token_type": "bearer", "access_token": token}
 
 
 @router.get("")
@@ -33,11 +35,14 @@ async def get_web(request: Request):
 
 @router.post("/web")
 async def web_login(response: Response,
+                    request: Request,
                     email: str = Form(...),
                     password: str = Form(...),
                     db: AsyncSession = Depends(get_async_db)
                     ):
     token = await loging(db, email, password)
+    token = "Bearer " + token
+    response = RedirectResponse(url="/posts", status_code=status.HTTP_301_MOVED_PERMANENTLY)
     response.set_cookie(
         "token", token,
         httponly=True,
@@ -46,7 +51,7 @@ async def web_login(response: Response,
         # domain="localhost",
         # secure=False,
         samesite="strict")
-    return RedirectResponse(url="/home")
+    return response
 
 
 @router.get("/logout")
