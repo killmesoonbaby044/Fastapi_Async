@@ -1,3 +1,6 @@
+import sys
+
+from loguru import logger
 LOGGING_CONFIG = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -24,9 +27,33 @@ LOGGING_CONFIG = {
         },
         "sqlalchemy.engine": {
             "handlers": ["file_handler_sqlalchemy"],
-            "level": "DEBUG",
+            "level": "INFO",
             "propagate": False,
         },
 
     },
 }
+
+logger.add(
+    sys.stdout,
+    level="INFO",
+    filter=lambda record: record["extra"] is None,
+)
+
+logger.add(
+    "response_validation.log",
+    level="ERROR",
+    rotation="10 MB",
+    enqueue=True,
+    compression="zip",
+    filter=lambda record: record["extra"]["file"] == "RVE",
+)
+
+logger.add(
+    "sqlalchemy.log",
+    level="ERROR",
+    rotation="10 MB",
+    enqueue=True,
+    compression="zip",
+    filter=lambda record: record["extra"]["file"] == "sql",
+)

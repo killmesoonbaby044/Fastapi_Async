@@ -1,4 +1,5 @@
 import logging.config
+import sys
 
 from fastapi import FastAPI
 from fastapi.exceptions import ResponseValidationError
@@ -19,15 +20,6 @@ app = FastAPI()
 
 logging.config.dictConfig(LOGGING_CONFIG)
 
-
-logger.add(
-    "response_validation.log",
-    level="INFO",
-    rotation="10 MB",
-    enqueue=True,
-    compression="zip",
-    filter=lambda record: record["extra"]["file"] == "RVE",
-)
 
 
 # sys.stdout = LoguruStream()

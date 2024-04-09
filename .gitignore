@@ -5,3 +5,4 @@ test_main.http
 .DS_Store
 .idea
 *.pub
+/app/.env_AD

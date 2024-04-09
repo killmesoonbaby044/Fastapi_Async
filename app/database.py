@@ -2,12 +2,17 @@ from loguru import logger
 from sqlalchemy.exc import InterfaceError
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
-from app.config import settings
+from app.config import settings_local, settings_ad
 
-database_hostname = settings.database_hostname
-database_password = settings.database_password
-database_name = settings.database_name
-database_username = settings.database_username
+database_hostname = settings_ad.database_hostname
+database_password = settings_ad.database_password
+database_name = settings_ad.database_name
+database_username = settings_ad.database_username
+
+# database_hostname = settings_local.database_hostname
+# database_password = settings_local.database_password
+# database_name = settings_local.database_name
+# database_username = settings_local.database_username
 
 SQLALCHEMY_DATABASE_URL = (
     f"postgresql+asyncpg://{database_username}:{database_password}@"
@@ -20,15 +25,6 @@ SQLALCHEMY_DATABASE_URL = (
 #     f"{database_hostname}/{database_name}"
 # )
 
-
-logger.add(
-    "sqlalchemy.log",
-    level="INFO",
-    rotation="10 MB",
-    enqueue=True,
-    compression="zip",
-    filter=lambda record: record["extra"]["file"] == "sql",
-)
 
 engine = create_async_engine(SQLALCHEMY_DATABASE_URL, echo=True)
 

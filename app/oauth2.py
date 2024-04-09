@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 from fastapi import Depends, HTTPException
-from fastapi.security import OAuth2PasswordBearer, APIKeyCookie
+from fastapi.security import APIKeyCookie
 from jose import jwt, JWTError
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
@@ -9,15 +9,14 @@ from starlette import status
 import app.routers.crud.users as user_crud
 from app import schemas
 from app.OauthCookieBearer import OAuth2PasswordBearerCookie
-from app.config import settings
+from app.config import settings_local
 from app.database import get_async_db
 
 oauth2_scheme = OAuth2PasswordBearerCookie(tokenUrl="login")
-cookie_scheme = APIKeyCookie(name="token")
-# cookie_scheme = OAuth2PasswordBearerCookie(tokenUrl="login")
-SECRET_KEY = settings.secret_key
-ALGORITHM = settings.algorithm
-ACCESS_TOKEN_EXPIRE_MINUTES = settings.access_token_expire_minutes
+# cookie_scheme = APIKeyCookie(name="token")
+SECRET_KEY = settings_local.secret_key
+ALGORITHM = settings_local.algorithm
+ACCESS_TOKEN_EXPIRE_MINUTES = settings_local.access_token_expire_minutes
 
 
 def create_access_token(data: dict):

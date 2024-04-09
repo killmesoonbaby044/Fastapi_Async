@@ -1,5 +1,4 @@
 from typing import Optional, Dict, cast, Any
-
 from fastapi import HTTPException
 from fastapi.security import OAuth2
 from fastapi.openapi.models import OAuthFlows as OAuthFlowsModel
@@ -32,20 +31,22 @@ class OAuth2PasswordBearerCookie(OAuth2):
     async def __call__(self, request: Request) -> Optional[str]:
         authorization = request.headers.get("Authorization")
         authorization_cookie = request.cookies.get("token")
+
         scheme, param = get_authorization_scheme_param(authorization)
         scheme_cookie, param_cookie = get_authorization_scheme_param(authorization_cookie)
-        if not (authorization or scheme.lower() != "bearer") or not (
-                authorization_cookie or scheme_cookie.lower() != "bearer"):
-            if self.auto_error:
-                raise HTTPException(
-                    status_code=HTTP_401_UNAUTHORIZED,
-                    detail="Not authenticated",
-                    headers={"WWW-Authenticate": "Bearer"},
-                )
-            else:
-                return None
+        if not (authorization or scheme.lower() == "bearer") and not (
+                authorization_cookie or scheme_cookie.lower() == "bearer"):
 
-        if param:
-            return param
-        if param_cookie:
-            return param_cookie
+            # if not authorization or scheme.lower() != "bearer":
+        #     if not authorization_cookie or scheme_cookie.lower() != "bearer":
+                if self.auto_error:
+                    raise HTTPException(
+                        status_code=HTTP_401_UNAUTHORIZED,
+                        detail="Not authenticated",
+                        headers={"WWW-Authenticate": "Bearer"},
+                    )
+                else:
+                    return None
+
+        return param or param_cookie
+
