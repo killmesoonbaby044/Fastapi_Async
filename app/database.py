@@ -19,15 +19,14 @@ SQLALCHEMY_DATABASE_URL = (
     f"{database_hostname}/{database_name}"
 )
 
-
 # SQLALCHEMY_DATABASE_URL_sync = (
 #     f"postgresql://{database_username}:{database_password}@"
 #     f"{database_hostname}/{database_name}"
 # )
-
+# engine_sync = create_engine(SQLALCHEMY_DATABASE_URL_sync, echo=True)
+# Session = sessionmaker(autocommit=False, autoflush=False, bind=engine_sync)
 
 engine = create_async_engine(SQLALCHEMY_DATABASE_URL, echo=True)
-
 Session_async = async_sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
@@ -39,10 +38,3 @@ async def get_async_db():
             logger.bind(file="sql").error(f"NO CONNECTION TO DB -->> {str(e)}")
         # except Exception as e:
         #     logger.bind(file="sql").error(f"NO CONNECTION TO DB -->> {str(e)}")
-
-
-
-# engine_sync = create_engine(SQLALCHEMY_DATABASE_URL_sync, echo=True)
-# Session = sessionmaker(autocommit=False, autoflush=False, bind=engine_sync)
-
-

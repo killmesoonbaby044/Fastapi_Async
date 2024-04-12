@@ -1,6 +1,4 @@
 import logging.config
-import sys
-
 from fastapi import FastAPI
 from fastapi.exceptions import ResponseValidationError
 from loguru import logger
@@ -10,7 +8,6 @@ from starlette.responses import JSONResponse
 
 from app.database import engine
 from app.logger import LOGGING_CONFIG
-from app.models import Base
 from app.routers import auth, users, posts, custom, votes
 
 app = FastAPI()
@@ -19,10 +16,6 @@ app = FastAPI()
 
 
 logging.config.dictConfig(LOGGING_CONFIG)
-
-
-
-# sys.stdout = LoguruStream()
 
 
 @app.exception_handler(ResponseValidationError)
@@ -37,15 +30,6 @@ async def validation_exception_handler(request: Request, exc: ResponseValidation
         content={"detail": "RVE ERROR:(((( "}
         # content={"detail": exc.errors(), "body": exc.body},
     )
-
-
-# @app.exception_handler(ResponseValidationError)
-# async def validation_exception_handler(request: Request, exc: ResponseValidationError):
-#
-#     return JSONResponse(
-#         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-#         content=jsonable_encoder({"detail": exc.errors(), "body": exc.body}),
-#     )
 
 # @app.on_event("startup")
 # async def startup():
