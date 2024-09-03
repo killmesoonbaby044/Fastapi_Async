@@ -1,16 +1,16 @@
 import logging.config
+
 from fastapi import FastAPI
 from fastapi.exceptions import ResponseValidationError
 from loguru import logger
 from starlette import status
 from starlette.requests import Request
 from starlette.responses import JSONResponse
-
 from app.database import engine
 from app.logger import LOGGING_CONFIG
 from app.routers import auth, users, posts, custom, votes
 
-app = FastAPI()
+app = FastAPI(title="PSYCHO")
 
 # app.add_middleware(SanitizeMiddleware)
 
@@ -31,11 +31,6 @@ async def validation_exception_handler(request: Request, exc: ResponseValidation
         # content={"detail": exc.errors(), "body": exc.body},
     )
 
-# @app.on_event("startup")
-# async def startup():
-#     async with engine.begin() as conn:
-#         await conn.run_sync(Base.metadata.drop_all)
-#         await conn.run_sync(Base.metadata.create_all)
 
 app.include_router(posts.router)
 app.include_router(users.router)
@@ -51,4 +46,4 @@ async def shutdown():
 
 @app.get("/")
 async def root():
-    print("as")
+    return {"message": "Hello World"}

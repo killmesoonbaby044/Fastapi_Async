@@ -4,9 +4,9 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import defer
 
-from app.exceptions.exception import UserExc
+from .base import get_filter_row
 from app.models import User
-from app.routers.crud.base import get_filter_row
+from app.exceptions.exception import UserExc
 
 
 async def check_user_not_exist_by_email(

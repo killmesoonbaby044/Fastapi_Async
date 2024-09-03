@@ -7,21 +7,21 @@ class UserExc:
 
     @classmethod
     def http204(cls, user_id):
-        return HTTPException(
+        raise HTTPException(
             status_code=status.HTTP_204_NO_CONTENT,
             detail=f"user with id {user_id} deleted",
         )
 
     @classmethod
     def http404(cls, user_id):
-        return HTTPException(
+        raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"User with id {user_id} doesnt exist",
         )
 
     @staticmethod
     def http400():
-        return HTTPException(
+        raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"User with same email exists",
         )
@@ -32,14 +32,14 @@ class PostExc:
 
     @classmethod
     def http404(cls, post_id):
-        return HTTPException(
+        raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Post with id: {post_id} not exists",
         )
 
     @classmethod
     def http403(cls):
-        return HTTPException(
+        raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="NO PERMISSION FOR THIS POST!!!",
         )
@@ -51,14 +51,14 @@ class VoteExc:
 
     @classmethod
     def http404(cls):
-        return HTTPException(
+        raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Vote does not exists",
         )
 
     @classmethod
     def http409(cls, user_id, post_id):
-        return HTTPException(
+        raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail=f"User {user_id} has already voted on post {post_id}",
         )

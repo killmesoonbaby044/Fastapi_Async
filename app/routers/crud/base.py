@@ -2,10 +2,8 @@ from typing import Type
 
 from sqlalchemy import ScalarResult, select, update, Select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import Session
-
 from app.models import Post, User, Vote
-from app.schemas import UserCreate, VoteBase, PostCreate
+from app.schemas import UserCreate, PostCreate
 
 
 async def get_table(db: AsyncSession, table: Type[Post | User]) -> ScalarResult:
@@ -20,13 +18,13 @@ async def get_filter_row(db: AsyncSession, table, **kwargs):
     return row
 
 
-def get_sync_filter_row(db: Session, table, **kwargs):
-    query: Select = select(table).filter_by(**kwargs).limit(1)
-    row = db.scalar(query)
-    return row
+# def get_sync_filter_row(db: Session, table, **kwargs):
+#     query: Select = select(table).filter_by(**kwargs).limit(1)
+#     row = db.scalar(query)
+#     return row
 
 
-async def add_row(db: AsyncSession, data: PostCreate | UserCreate | VoteBase):
+async def add_row(db: AsyncSession, data: Post | User | Vote):
     db.add(data)
     await db.commit()
     await db.refresh(data)

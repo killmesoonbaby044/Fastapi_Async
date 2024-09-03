@@ -35,14 +35,6 @@ async def get_my_posts(
     return posts.all()
 
 
-@router.get("/my1", response_model=List[PostOut], status_code=status.HTTP_200_OK)
-async def get_my_posts1(
-    db: AsyncSession = Depends(get_async_db), current_user=Depends(get_current_user)
-):
-    posts = await post_crud.get_owner_posts(db, current_user)
-    return posts.all()
-
-
 @router.get("/{post_id}", status_code=status.HTTP_200_OK, response_model=PostOut)
 async def get_post_query_input(
     post_id: int,
@@ -54,7 +46,6 @@ async def get_post_query_input(
         post_id=post_id,
         limit=1,
     )
-
     post = result.one_or_none()
     if not post:
         raise PostExc.http404(post_id)

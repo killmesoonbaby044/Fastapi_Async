@@ -1,8 +1,9 @@
 from datetime import datetime
 
 from sqlalchemy import text, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column, declarative_base, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship, declarative_base
 
+# from app.database import Base
 Base = declarative_base()
 
 
@@ -52,8 +53,6 @@ class Test(Base):
     email: Mapped[str] = mapped_column()
     nickname: Mapped[str] = mapped_column()
     salary: Mapped[float] = mapped_column()
-
-
 
 
 # PostSQL_alias = alias(Post.__table__)

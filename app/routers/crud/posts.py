@@ -11,7 +11,6 @@ async def get_owner_posts(
     limit: int = None,
     offset: int = None,
     title_contains: str = "",
-    content_contains: str = "",
 ):
     # query = select(PostSQL).where(PostSQL.owner_id == current_user.id).order_by(PostSQL.id)
     query: Select = (

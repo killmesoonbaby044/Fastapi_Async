@@ -25,6 +25,16 @@ async def get_users(
     return users.all()
 
 
+@router.get("/{user_id}", response_model=UserOut, status_code=status.HTTP_200_OK)
+async def get_user(
+    user_id: int,
+    db: AsyncSession = Depends(get_async_db),
+    current_user: User = Depends(get_current_user),
+):
+    user = await user_crud.get_user(db, user_id)
+    return user
+
+
 @router.post("", status_code=status.HTTP_201_CREATED, response_model=UserOut)
 async def create_user(user_cred: UserCreate, db: AsyncSession = Depends(get_async_db)):
     """

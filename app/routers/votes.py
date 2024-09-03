@@ -12,7 +12,7 @@ from app.schemas import VoteIn
 router = APIRouter(prefix="/votes", tags=["Votes"])
 
 
-@router.post("/", status_code=status.HTTP_200_OK)
+@router.post("", status_code=status.HTTP_201_CREATED)
 async def create_vote(
     data: VoteIn,
     db: AsyncSession = Depends(get_async_db),

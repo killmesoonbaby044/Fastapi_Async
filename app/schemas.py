@@ -8,10 +8,9 @@ from pydantic import EmailStr, Field, BaseModel, ConfigDict
 
 
 class UserBase(BaseModel):
-    email: EmailStr
+    model_config = ConfigDict(from_attributes=True)
 
-    class Config:
-        from_attributes = True
+    email: EmailStr
 
 
 class UserCreate(BaseModel):
@@ -55,6 +54,7 @@ class PostBase(BaseModel):
 class PostCreate(BaseModel):
     title: str
     content: str
+    published: Optional[bool] = True
 
 
 class PostOut(BaseModel):

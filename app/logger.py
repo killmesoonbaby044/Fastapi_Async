@@ -1,6 +1,5 @@
-import sys
-
 from loguru import logger
+
 LOGGING_CONFIG = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -30,14 +29,14 @@ LOGGING_CONFIG = {
             "level": "INFO",
             "propagate": False,
         },
-
     },
 }
 
 logger.add(
-    sys.stdout,
+    "default.log",
     level="INFO",
-    filter=lambda record: record["extra"] is None,
+    format="{time} -> {level} -> {message}",
+    filter=lambda record: record["extra"] == {},
 )
 
 logger.add(
