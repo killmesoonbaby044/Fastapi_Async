@@ -11,7 +11,7 @@ class SettingsLocal(BaseSettings):
     algorithm: str
     access_token_expire_minutes: int
 
-    model_config = SettingsConfigDict(env_file="app/.env", env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
 
 class SettingsAD(BaseSettings):
@@ -24,10 +24,10 @@ class SettingsAD(BaseSettings):
     algorithm: str
     access_token_expire_minutes: int
 
-    model_config = SettingsConfigDict(env_file="app/.env_AD", env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(env_file=".env_AD", env_file_encoding="utf-8")
 
     # class Config:
-    #     env_file = "app/.env"
+    #     env_file = ".env"
 
 
 settings_local = SettingsLocal()

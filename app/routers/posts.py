@@ -21,7 +21,7 @@ router = APIRouter(prefix="/posts", tags=["Posts"])
 async def get_posts(
     db: AsyncSession = Depends(get_async_db),
     current_user=Depends(get_current_user),
-    query: dict = Depends(post_query),
+    query: dict = Depends(post_query)
 ):
     posts = await post_crud.get_post_table_with_vote(db, **query)
     return posts.all()
