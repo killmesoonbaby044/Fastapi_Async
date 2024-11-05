@@ -25,7 +25,11 @@ engine = create_async_engine(
     poolclass=NullPool,
 )
 TestingAsyncSessionLocal = async_sessionmaker(
-    autocommit=False, autoflush=False, bind=engine, class_=AsyncSession, expire_on_commit=False
+    autocommit=False,
+    autoflush=False,
+    bind=engine,
+    class_=AsyncSession,
+    expire_on_commit=False,
 )
 
 
@@ -81,10 +85,10 @@ async def authorized_client(client, test_user):
 @pytest.fixture
 async def test_posts(test_user, session, test_user2):
     posts_data = [
-        {"title": "1st title", "content": "first content", "owner_id": test_user['id']},
-        {"title": "2nd title", "content": "2nd content", "owner_id": test_user['id']},
-        {"title": "3rd title", "content": "3rd content", "owner_id": test_user['id']},
-        {"title": "4th title", "content": "4rd content", "owner_id": test_user2['id']}
+        {"title": "1st title", "content": "first content", "owner_id": test_user["id"]},
+        {"title": "2nd title", "content": "2nd content", "owner_id": test_user["id"]},
+        {"title": "3rd title", "content": "3rd content", "owner_id": test_user["id"]},
+        {"title": "4th title", "content": "4rd content", "owner_id": test_user2["id"]},
     ]
 
     def create_post_model(post):

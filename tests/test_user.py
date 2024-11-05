@@ -26,7 +26,7 @@ async def test_login_api(client, test_user):
 async def test_login_web(client, test_user):
     res = await client.post(
         "/login/web",
-        data={"email": test_user["email"], "password": test_user["password"]}
+        data={"email": test_user["email"], "password": test_user["password"]},
     )
     assert res.status_code == 301
 
@@ -72,7 +72,9 @@ async def test_incorrect_login_web(test_user, client, email, password, status_co
 
 
 async def test_create_user(client, session, authorized_client):
-    res = await client.post("/users", json={"email": "aa@gmail.com", "password": "123!"})
+    res = await client.post(
+        "/users", json={"email": "aa@gmail.com", "password": "123!"}
+    )
     assert res.status_code == 201
 
     user = schemas.UserOut(**res.json())

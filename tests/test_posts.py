@@ -50,29 +50,34 @@ async def test_get_one_non_exist_post(authorized_client, test_posts):
     assert res.status_code == 404
 
 
-@pytest.mark.parametrize("title, content, published", [
-    ("new_title", "new_content", True),
-    ("favorite pizza", "i love pepperoni", False),
-    ("tallest skyscrapers", "wahoo", True),
-])
+@pytest.mark.parametrize(
+    "title, content, published",
+    [
+        ("new_title", "new_content", True),
+        ("favorite pizza", "i love pepperoni", False),
+        ("tallest skyscrapers", "wahoo", True),
+    ],
+)
 async def test_create_posts(authorized_client, test_user, title, content, published):
-    res = await authorized_client.post('/posts', json={"title": title, "content": content, 'published': published})
+    res = await authorized_client.post(
+        "/posts", json={"title": title, "content": content, "published": published}
+    )
     created_posts = schemas.PostBase(**res.json())
     assert res.status_code == 201
     assert created_posts.title == title
     assert created_posts.content == content
     assert created_posts.published == published
-    assert created_posts.owner_id == test_user['id']
+    assert created_posts.owner_id == test_user["id"]
 
 
 async def test_create_post_default_published_true(authorized_client, test_user):
-    res = await authorized_client.post('/posts', json=data_no_publ)
+    res = await authorized_client.post("/posts", json=data_no_publ)
     created_posts = schemas.PostBase(**res.json())
     assert res.status_code == 201
-    assert created_posts.title == 'NEW_SUPER_TITLE'
-    assert created_posts.content == 'NEW_SUPER_CONTENT'
+    assert created_posts.title == "NEW_SUPER_TITLE"
+    assert created_posts.content == "NEW_SUPER_CONTENT"
     assert created_posts.published == True
-    assert created_posts.owner_id == test_user['id']
+    assert created_posts.owner_id == test_user["id"]
 
 
 async def test_unauthorized_user_create_post(client):
@@ -95,7 +100,9 @@ async def test_delete_non_exist_post(authorized_client, test_posts):
     assert res.status_code == 404
 
 
-async def test_delete_other_user_post(authorized_client, test_posts, test_user, test_user2):
+async def test_delete_other_user_post(
+    authorized_client, test_posts, test_user, test_user2
+):
     res = await authorized_client.delete(f"/posts/{test_posts[3].id}")
     assert res.status_code == 403
 
@@ -104,12 +111,14 @@ async def test_update_post(authorized_client, test_posts, test_user):
     res = await authorized_client.put(f"/posts/{test_posts[0].id}", json=data)
     updated_posts = schemas.PostBase(**res.json())
     assert res.status_code == 200
-    assert updated_posts.title == data['title']
-    assert updated_posts.content == data['content']
-    assert updated_posts.published == data['published']
+    assert updated_posts.title == data["title"]
+    assert updated_posts.content == data["content"]
+    assert updated_posts.published == data["published"]
 
 
-async def test_update_other_user_post(authorized_client, test_posts, test_user, test_user2):
+async def test_update_other_user_post(
+    authorized_client, test_posts, test_user, test_user2
+):
     res = await authorized_client.put(f"/posts/{test_posts[3].id}", json=data)
     assert res.status_code == 403
 
