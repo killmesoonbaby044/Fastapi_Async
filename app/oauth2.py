@@ -50,7 +50,9 @@ class OAuth2PasswordBearerCookie(OAuth2PasswordBearer):
         scheme_cookie, param_cookie = get_authorization_scheme_param(
             authorization_cookie
         )
-        if not (authorization or scheme.lower() == "bearer") and not (
+        if not (
+                authorization or scheme.lower() == "bearer"
+        ) and not (
             authorization_cookie or scheme_cookie.lower() == "bearer"
         ):
             if self.auto_error:

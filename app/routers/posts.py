@@ -27,7 +27,7 @@ async def get_posts(
     return posts.all()
 
 
-@router.get("/my", response_model=List[PostOut], status_code=status.HTTP_200_OK)
+@router.get("/my", response_model=List[PostBase], status_code=status.HTTP_200_OK)
 async def get_my_posts(
     db: AsyncSession = Depends(get_async_db), current_user=Depends(get_current_user)
 ):
