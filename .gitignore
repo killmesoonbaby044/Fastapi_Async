@@ -6,3 +6,4 @@ test_main.http
 .idea
 *.pub
 /.env_AD
+venv
