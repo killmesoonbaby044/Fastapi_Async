@@ -31,7 +31,6 @@ async def get_posts(
 async def get_my_posts(
     db: AsyncSession = Depends(get_async_db), current_user=Depends(get_current_user)
 ):
-    print("abeme")
     posts = await post_crud.get_owner_posts(db, current_user)
     return posts.all()
 
