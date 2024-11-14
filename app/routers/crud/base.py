@@ -13,7 +13,7 @@ async def get_table(db: AsyncSession, table: Type[Post | User]) -> ScalarResult:
 
 
 async def get_filter_row(db: AsyncSession, table, **kwargs):
-    query: Select = select(table).filter_by(**kwargs).limit(1)
+    query: Select = select(table).filter_by(**kwargs)
     row = await db.scalar(query)
     return row
 
@@ -34,11 +34,11 @@ async def add_row(db: AsyncSession, data: Post | User | Vote):
 async def update_row(
     db: AsyncSession,
     table: Type[Post | User],
-    post_id: int,
+    row_id: int,
     data: PostCreate | UserCreate,
     row: Type[Post | User],
 ):
-    update_query = update(table).filter_by(id=post_id).values(data.model_dump())
+    update_query = update(table).filter_by(id=row_id).values(data.model_dump())
 
     await db.execute(update_query)
     await db.commit()

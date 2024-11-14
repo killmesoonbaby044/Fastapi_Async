@@ -50,9 +50,7 @@ class OAuth2PasswordBearerCookie(OAuth2PasswordBearer):
         scheme_cookie, param_cookie = get_authorization_scheme_param(
             authorization_cookie
         )
-        if not (
-                authorization or scheme.lower() == "bearer"
-        ) and not (
+        if not (authorization or scheme.lower() == "bearer") and not (
             authorization_cookie or scheme_cookie.lower() == "bearer"
         ):
             if self.auto_error:
@@ -81,6 +79,19 @@ async def get_current_user(
     token = verify_acc_token(token, credentials_exception)
     user = await user_crud.get_user(db, token.id)
     return user
+
+
+async def check_token(
+    token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_async_db)
+) -> int:
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail=f"Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    token = verify_acc_token(token, credentials_exception)
+    user_id = await user_crud.check_user_exists_by_id(db, token.id)
+    return user_id
 
 
 # async def get_current_user2(

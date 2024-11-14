@@ -1,7 +1,9 @@
-from fastapi import Query
+from typing import Annotated
+
+from fastapi import Query, Depends
 
 
-async def post_query(
+async def post_parameters(
     limit: int = Query(None),
     offset: int = Query(None),
     title_contains: str = Query(""),
@@ -14,6 +16,8 @@ async def post_query(
         "content_contains": content_contains,
     }
 
+
+post_query = Annotated[dict, Depends(post_parameters)]
 
 #
 # async def post_parameters(

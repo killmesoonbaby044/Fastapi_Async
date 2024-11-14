@@ -9,7 +9,7 @@ import app.routers.crud.users as user_crud
 from app.database import get_async_db
 from app.exceptions.exception import UserExc
 from app.models import User
-from app.oauth2 import get_current_user
+from app.oauth2 import check_token
 from app.schemas import UserOut, UserCreate
 from app.utils import hashing
 
@@ -19,7 +19,7 @@ router = APIRouter(prefix="/users", tags=["Users"])
 @router.get("", response_model=List[UserOut], status_code=status.HTTP_200_OK)
 async def get_users(
     db: AsyncSession = Depends(get_async_db),
-    current_user: User = Depends(get_current_user),
+    validated_user_id: int = Depends(check_token),
 ):
     users = await base_crud.get_table(db, User)
     return users.all()
@@ -29,7 +29,7 @@ async def get_users(
 async def get_user(
     user_id: int,
     db: AsyncSession = Depends(get_async_db),
-    current_user: User = Depends(get_current_user),
+    validated_user_id: int = Depends(check_token),
 ):
     user = await user_crud.get_user(db, user_id)
     return user
@@ -42,7 +42,7 @@ async def create_user(user_cred: UserCreate, db: AsyncSession = Depends(get_asyn
     First it's creating in pydantic model select request to DB and check if DB already have user with this email.
     Second - make insert request to db and catch with try except block IntegrityError in code.
     """
-    await user_crud.check_user_not_exist_by_email(db, user_cred.email)
+    await user_crud.check_user_not_exists_by_email(db, user_cred.email)
     user_cred.password = hashing(user_cred.password)
     new_user = User(**user_cred.model_dump())
     user = await base_crud.add_row(db, new_user)
@@ -53,9 +53,12 @@ async def create_user(user_cred: UserCreate, db: AsyncSession = Depends(get_asyn
 async def delete_user(
     user_id: int,
     db: AsyncSession = Depends(get_async_db),
-    current_user: User = Depends(get_current_user),
+    validated_user_id: int = Depends(check_token),
 ):
     user = await user_crud.get_user(db, user_id)
+    if not user:
+        raise UserExc.http404(user_id)
+
     await base_crud.delete_row(db, user)
 
-    return UserExc.http204(user_id)
+    raise UserExc.http204(user_id)

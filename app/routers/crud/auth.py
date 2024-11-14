@@ -11,8 +11,8 @@ from loguru import logger
 async def loging(request, db: AsyncSession, email, password):
     user = await get_filter_row(db, User, email=email)
     if not user:
-        logger.info(
-            f"logging user doesnt exist -> {request.client.host!r} -> {email!r}"
+        logger.warning(
+            f"logging user doesnt exist -> {request.client.host!r} -> {request.headers['user-agent']!r} -> {email!r}"
         )
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -20,7 +20,9 @@ async def loging(request, db: AsyncSession, email, password):
         )
 
     if not pwd_context.verify(password, user.password):
-        logger.info(f"Invalid Password -> {request.client.host!r} -> {email!r}")
+        logger.warning(
+            f"Invalid Password -> {request.client.host!r} -> {request.headers['user-agent']!r} -> {email!r}"
+        )
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail=f"Invalid Credentials"
         )

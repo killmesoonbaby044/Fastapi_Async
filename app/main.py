@@ -20,16 +20,35 @@ logging.config.dictConfig(LOGGING_CONFIG)
 
 @app.exception_handler(ResponseValidationError)
 async def validation_exception_handler(request: Request, exc: ResponseValidationError):
-    error_messages = [
-        f"got: {error['input']} ->> instead: {error['loc'][2]} ->> {error['msg']}"
-        for error in exc.errors()
-    ]
-    logger.bind(file="RVE").error(error_messages)
+    error_messages = []
+    for error in exc.errors():
+        location = error["loc"][-1]
+        error_message = f"Input: {error['input']} -> Expected location: {location} -> Error: {error['msg']}"
+        error_messages.append(error_message)
+
+    logger.bind(file="RVE").error(f"Validation Errors: {error_messages!r}")
+
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content={"detail": "RVE ERROR:(((( "}
-        # content={"detail": exc.errors(), "body": exc.body},
+        content={
+            "detail": "An internal server error occurred while validating the response.",
+            "errors": error_messages,
+        },
     )
+
+
+# @app.exception_handler(ResponseValidationError)
+# async def validation_exception_handler(request: Request, exc: ResponseValidationError):
+#     error_messages = [
+#         f"got: {error['input']} ->> instead: {error['loc'][2]} ->> {error['msg']}"
+#         for error in exc.errors()
+#     ]
+#     logger.bind(file="RVE").error(error_messages)
+#     return JSONResponse(
+#         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+#         content={"detail": "RVE ERROR:(((( "}
+#         # content={"detail": exc.errors(), "body": exc.body},
+#     )
 
 
 app.include_router(posts.router)

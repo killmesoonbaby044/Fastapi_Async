@@ -9,7 +9,7 @@ class UserExc:
     def http204(cls, user_id):
         raise HTTPException(
             status_code=status.HTTP_204_NO_CONTENT,
-            detail=f"user with id {user_id} deleted",
+            detail=f"User with id {user_id} deleted",
         )
 
     @classmethod

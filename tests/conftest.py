@@ -5,22 +5,25 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, Asyn
 import app.routers.crud.base as base_crud
 
 from app import models
-from app.config import SettingsAD, SettingsLocal
-from app.database import get_async_db
+from app.config import settings_ad as settings
+from app.database import get_async_db, SQLALCHEMY_DATABASE_URL
 from app.models import Base, Post
 from app.main import app
 from app.oauth2 import create_access_token
 
-settings_ad = SettingsLocal()
 
-
-DATABASE_URL = (
-    f"postgresql+asyncpg://{settings_ad.database_username}:{settings_ad.database_password}@"
-    f"{settings_ad.database_hostname}/{settings_ad.database_name}_test"
-)
+# db_hostname = settings.database_hostname
+# db_password = settings.database_password
+# db_name = settings.database_name
+# db_username = settings.database_username
+#
+# SQLALCHEMY_DATABASE_URL = (
+#     f"postgresql+asyncpg://{db_username}:{db_password}@" f"{db_hostname}/{db_name}_test"
+# )
+SQLALCHEMY_DATABASE_URL += '_test'
 
 engine = create_async_engine(
-    DATABASE_URL,
+    SQLALCHEMY_DATABASE_URL,
     echo=True,
     poolclass=NullPool,
 )

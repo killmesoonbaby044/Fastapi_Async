@@ -11,7 +11,7 @@ from app.Query_Depends import post_query
 from app.database import get_async_db
 from app.exceptions.exception import PostExc
 from app.models import Post, User
-from app.oauth2 import get_current_user
+from app.oauth2 import check_token
 from app.schemas import PostOut, PostBase, PostCreate
 
 router = APIRouter(prefix="/posts", tags=["Posts"])
@@ -19,9 +19,9 @@ router = APIRouter(prefix="/posts", tags=["Posts"])
 
 @router.get("", status_code=status.HTTP_200_OK, response_model=List[PostOut])
 async def get_posts(
+    query: post_query,
     db: AsyncSession = Depends(get_async_db),
-    current_user=Depends(get_current_user),
-    query: dict = Depends(post_query),
+    user_id=Depends(check_token),
 ):
     posts = await post_crud.get_post_table_with_vote(db, **query)
     return posts.all()
@@ -29,9 +29,10 @@ async def get_posts(
 
 @router.get("/my", response_model=List[PostBase], status_code=status.HTTP_200_OK)
 async def get_my_posts(
-    db: AsyncSession = Depends(get_async_db), current_user=Depends(get_current_user)
+    db: AsyncSession = Depends(get_async_db),
+    user_id: int = Depends(check_token),
 ):
-    posts = await post_crud.get_owner_posts(db, current_user)
+    posts = await post_crud.get_owner_posts(db, user_id)
     return posts.all()
 
 
@@ -39,7 +40,7 @@ async def get_my_posts(
 async def get_post_query_input(
     post_id: int,
     db: AsyncSession = Depends(get_async_db),
-    current_user=Depends(get_current_user),
+    user_id: int = Depends(check_token),
 ):
     result = await post_crud.get_post_table_with_vote(
         db=db,
@@ -56,9 +57,9 @@ async def get_post_query_input(
 async def create_post(
     post: PostCreate,
     db: AsyncSession = Depends(get_async_db),
-    current_user: User = Depends(get_current_user),
+    user_id: int = Depends(check_token),
 ):
-    new_post = Post(**post.model_dump(), owner_id=current_user.id)
+    new_post = Post(**post.model_dump(), owner_id=user_id)
     updated_post = await base_crud.add_row(db, new_post)
 
     return updated_post
@@ -69,9 +70,9 @@ async def update_post(
     post_id: int,
     update_data: PostCreate,
     db: AsyncSession = Depends(get_async_db),
-    current_user=Depends(get_current_user),
+    user_id: int = Depends(check_token),
 ):
-    post = await post_crud.check_post_exist_and_rights(db, post_id, current_user)
+    post = await post_crud.check_post_exist_and_permission(db, post_id, user_id)
 
     updated_post = await base_crud.update_row(db, Post, post_id, update_data, post)
 
@@ -82,9 +83,9 @@ async def update_post(
 async def delete_post(
     post_id: int,
     db: AsyncSession = Depends(get_async_db),
-    current_user=Depends(get_current_user),
+    user_id: int = Depends(check_token),
 ):
-    post = await post_crud.check_post_exist_and_rights(db, post_id, current_user)
+    post = await post_crud.check_post_exist_and_permission(db, post_id, user_id)
 
     await base_crud.delete_row(db, post)
 
