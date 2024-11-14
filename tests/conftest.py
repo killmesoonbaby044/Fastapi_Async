@@ -12,14 +12,6 @@ from app.main import app
 from app.oauth2 import create_access_token
 
 
-# db_hostname = settings.database_hostname
-# db_password = settings.database_password
-# db_name = settings.database_name
-# db_username = settings.database_username
-#
-# SQLALCHEMY_DATABASE_URL = (
-#     f"postgresql+asyncpg://{db_username}:{db_password}@" f"{db_hostname}/{db_name}_test"
-# )
 SQLALCHEMY_DATABASE_URL += '_test'
 
 engine = create_async_engine(
