@@ -20,6 +20,7 @@ email-validator==2.0.0.post2
 exceptiongroup==1.1.2
 fastapi==0.100.1
 greenlet==2.0.2
+gunicorn==23.0.0
 h11==0.14.0
 httpcore==1.0.5
 httptools==0.6.0

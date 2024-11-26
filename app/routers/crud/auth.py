@@ -1,4 +1,5 @@
 from fastapi import HTTPException
+from pydantic import EmailStr
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 from app.oauth2 import create_access_token
@@ -8,7 +9,7 @@ from app.models import User
 from loguru import logger
 
 
-async def loging(request, db: AsyncSession, email, password):
+async def loging(request, db: AsyncSession, email: EmailStr, password: str):
     user = await get_filter_row(db, User, email=email)
     if not user:
         logger.warning(

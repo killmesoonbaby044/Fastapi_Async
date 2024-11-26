@@ -3,7 +3,7 @@ from sqlalchemy.exc import InterfaceError
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.orm import declarative_base
 
-from .config import settings_ad as settings
+from .config import settings_local as settings
 
 db_hostname = settings.database_hostname
 db_password = settings.database_password

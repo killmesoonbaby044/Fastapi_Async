@@ -9,6 +9,7 @@ from starlette.responses import JSONResponse
 from app.database import engine
 from app.logger import LOGGING_CONFIG
 from app.routers import auth, users, posts, custom, votes
+from app.sanitize import SanitizeMiddleware
 
 app = FastAPI(title="PSYCHO")
 
@@ -20,21 +21,18 @@ logging.config.dictConfig(LOGGING_CONFIG)
 
 @app.exception_handler(ResponseValidationError)
 async def validation_exception_handler(request: Request, exc: ResponseValidationError):
-    error_messages = []
-    for error in exc.errors():
-        location = error["loc"][-1]
-        error_message = f"Input: {error['input']} -> Expected location: {location} -> Error: {error['msg']}"
-        error_messages.append(error_message)
-
-    logger.bind(file="RVE").error(f"Validation Errors: {error_messages!r}")
+    error_messages = [
+        f"Error: {error['msg']} -> Input: {error['input']} -> Expected: {error['loc'][-1]}"
+        for error in exc.errors()
+    ]
+    logger.bind(file="RVE").error(f"Validation Errors: {list(enumerate(error_messages, 1))}")
 
     return JSONResponse(
-        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content={
-            "detail": "An internal server error occurred while validating the response.",
-            "errors": error_messages,
-        },
-    )
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={
+                "detail": "An internal server error occurred RVE",
+            },
+        )
 
 
 # @app.exception_handler(ResponseValidationError)

@@ -2,7 +2,7 @@ from sqlalchemy import select, ScalarResult, func, Select, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.exceptions.exception import PostExc
-from app.models import Post, User, Vote
+from app.models import Post, Vote
 
 
 async def get_owner_posts(

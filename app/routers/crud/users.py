@@ -9,7 +9,7 @@ from app.models import User
 from app.exceptions.exception import UserExc
 
 
-async def get_user(db: AsyncSession, user_id):
+async def get_user(db: AsyncSession,  user_id: int):
     query = select(User).filter_by(id=user_id).options(defer(User.password))
     user = await db.scalar(query)
     return user
@@ -24,12 +24,13 @@ async def check_user_not_exists_by_email(
         raise UserExc.http400()
 
 
-async def check_user_exists_by_id(db: AsyncSession, user_id: int) -> int:
+async def check_user_exists_by_id(
+        db: AsyncSession,
+        user_id: int
+) -> HTTPException | None:
     query = select(exists().where(User.id == user_id))
     existing = await db.scalar(query)
-    if existing:
-        return user_id
-    else:
+    if not existing:
         raise UserExc.http404(user_id)
 
 

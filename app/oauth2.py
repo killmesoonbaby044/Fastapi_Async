@@ -90,8 +90,8 @@ async def check_token(
         headers={"WWW-Authenticate": "Bearer"},
     )
     token = verify_acc_token(token, credentials_exception)
-    user_id = await user_crud.check_user_exists_by_id(db, token.id)
-    return user_id
+    await user_crud.check_user_exists_by_id(db, token.id)
+    return token.id
 
 
 # async def get_current_user2(
